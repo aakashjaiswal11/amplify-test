@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import home from './components/Home';
+import Login from './components/Login';
+import Favorite from './components/Favorite';
+import "bootstrap/dist/css/bootstrap.min.css"
+import Protected from './components/Protected';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Hello Amplify-Testing Demo
-        </a>
-      </header>
-    </div>
+    <>
+    <BrowserRouter>
+    <Routes>
+        <Route exact path="/" Component={home} />
+        <Route exact path="/Favorite" element={<Protected Component={Favorite} />} />
+        <Route exact path="/Login" Component={Login} />
+    </Routes>
+    </BrowserRouter>
+    </>
   );
 }
 
