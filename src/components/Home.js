@@ -1,16 +1,18 @@
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
 import './App.css';
 
 function Home() {
-
 
   const apiKey = "f56f24967aaf51182d1d4df628297c6d"
   const [inputCity, setInputCity] = useState("")
   const [data, setData] = useState({})
   const [show, setShow] = useState(true)
+  const [name, namechange] = useState("");
+
 
 
   const getWetherDetails = (cityName) => {
@@ -33,9 +35,30 @@ function Home() {
     getWetherDetails(inputCity)
   }
 
-  const Temp = () => {
-    getWetherDetails(inputCity)
-  }
+  const navigate = useNavigate();
+
+  const handlefev = (e) => {
+    e.preventDefault();
+    let regobj = { inputCity };
+    console.log(JSON.stringify(regobj), "CityName");
+    // if (IsValidate()) {
+    console.log(regobj);
+    try {
+    fetch("http://localhost:8000/city", {
+        method: "POST",
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(regobj)
+    }).then((res) => {
+        console.log(res);
+        navigate('/Favorite');
+    }).catch((err) => {
+        console.log(err);
+    });
+} catch (err) {
+    console.log(err);
+}
+
+}
 
 
   return (
@@ -63,20 +86,19 @@ function Home() {
                 <thead>
                   <tr>
                     <th scope="col">City Name</th>
-                    <th scope="col">{show ? "Temperature" : "Ferenat"}</th>
+                    <th scope="col">{show ? "Temperature" : "Fahrenheit"}</th>
                     <th scope="col">Weather</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody> 
                   <tr>
-                    <th scope="row">{data?.name}</th>
+                    <th scope="row" value={data?.name} onChange={e => namechange(e.target.value)}>{data?.name}</th>
                     <td className="cel">{show ? `${((data?.main?.temp) - 273.15).toFixed(2)}°C` : `${((((data?.main?.temp) - 273.15) * 9 / 5) + 32).toFixed(2)}°F`}</td>
-                    {/* Fahrenheit (°F) = (Temperature in degrees Celsius (°C) * 9/5) + 32 */}
                     <td>{data?.weather[0].main}</td>
                     <td>
                       <button className="btn btn-primary" type="button"
-                        onClick={handleSearch}
+                        onClick={handlefev}
                       >Add to Favorite</button>
                     </td>                    
                   </tr>
@@ -84,7 +106,7 @@ function Home() {
               </table>
               <button className="btn btn-primary" type="button"
                       onClick={ () => setShow(!show) }
-                    >{show ? "Show in Feranite" : "Show in Temperature"}</button>
+                    >{show ? "Show in Fahrenheit" : "Show in Temperature"}</button>
             </div>
           </div>
         }
